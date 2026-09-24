@@ -4,12 +4,15 @@ public class ServicioAdicional {
     private String descripcion;
     private String disponibilidad;
     private double precio;
+
+private ServicioAdicional[] listaServicios;
 public ServicioAdicional (String codigo, String nombre, String descripcion, String disponibilidad, double precio){
     this.codigo = codigo;
     this.nombre = nombre;
     this.descripcion = descripcion;
     this.disponibilidad = disponibilidad;
     this.precio = precio;
+    
 
     }
 
@@ -49,7 +52,6 @@ public ServicioAdicional (String codigo, String nombre, String descripcion, Stri
         return precio;
     }
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
+    
 }
+

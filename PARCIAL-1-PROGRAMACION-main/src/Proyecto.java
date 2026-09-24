@@ -6,7 +6,7 @@ public class Proyecto {
     private String estado;
     private String metodoPago;
     private double valorTotal;
-
+   private ServicioAdicional[] listaServicios;
     private Desarrollador[] listaDesarrolladores;
     private ServicioAdicional[] serviciosAdicionales;
 
@@ -19,7 +19,7 @@ public class Proyecto {
         this.estado = estado;
         this.metodoPago = metodoPago;
         this.valorTotal = valorTotal;
-        
+        this.listaServicios = new ServicioAdicional[100];
         this.listaDesarrolladores = new Desarrollador[100];
         this.serviciosAdicionales = new ServicioAdicional[100];
         
@@ -54,4 +54,8 @@ public class Proyecto {
     public void setServiciosAdicionales(ServicioAdicional[] serviciosAdicionales) { this.serviciosAdicionales = serviciosAdicionales; }
 
     
+    
+    public ServicioAdicional[] getListaServicios() {
+    return listaServicios;
+}
 }

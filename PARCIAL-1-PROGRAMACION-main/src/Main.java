@@ -37,6 +37,7 @@ public class Main {
                     registrarNuevoProyecto();
                     break;
                 case 5:
+                    asignarDesarrolladorAProyecto();
                     break;
                 case 6:
                     break;
@@ -206,6 +207,55 @@ public static void asignarDesarrolladorAProyecto() {
         }
     } else {
         JOptionPane.showMessageDialog(null, "No asignado. El estado del desarrollador es: " + desarrolladorEncontrado.getEstado());
+    }
+}
+static void agregarServiciosAProyecto() {
+    String codigoProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
+    Proyecto proyectoEncontrado = null;
+    Proyecto[] proyectos = devPlus.getListaProyectos();
+
+    for (int i = 0; i < proyectos.length; i++) {
+        if (proyectos[i] != null && proyectos[i].getCodigo().equalsIgnoreCase(codigoProyecto)) {
+            proyectoEncontrado = proyectos[i];
+            break;
+        }
+    }
+
+    if (proyectoEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Proyecto no encontrado.");
+        return;
+    }
+
+    String codigoServicio = JOptionPane.showInputDialog("Ingrese el código del Servicio Adicional:");
+    ServicioAdicional servicioEncontrado = null;
+    ServicioAdicional[] servicios = devPlus.getListaServiciosAdicionales();
+
+    for (int i = 0; i < servicios.length; i++) {
+        if (servicios[i] != null && servicios[i].getCodigo().equalsIgnoreCase(codigoServicio)) {
+            servicioEncontrado = servicios[i];
+            break;
+        }
+    }
+
+    if (servicioEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Servicio Adicional no encontrado.");
+        return;
+    }
+
+    ServicioAdicional[] listaProyServicios = proyectoEncontrado.getListaServicios();
+    boolean guardado = false;
+
+    for (int i = 0; i < listaProyServicios.length; i++) {
+        if (listaProyServicios[i] == null) {
+            listaProyServicios[i] = servicioEncontrado;
+            guardado = true;
+            JOptionPane.showMessageDialog(null, "Servicio agregado con éxito. Espacio en proyecto: " + (i + 1) + "/100");
+            break;
+        }
+    }
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: Límite de servicios alcanzado para este proyecto.");
     }
 }
 }
