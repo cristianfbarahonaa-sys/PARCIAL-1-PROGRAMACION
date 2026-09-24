@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 
 public class Main {
@@ -52,21 +52,32 @@ public class Main {
             }
         } while (opcion != 0);
     }
+public static void registrarNuevoCliente() {
+    String nombre = JOptionPane.showInputDialog("Ingrese el nombre completo:");
+    String documento = JOptionPane.showInputDialog("Ingrese el documento de identidad:");
+    String telefono = JOptionPane.showInputDialog("Ingrese el teléfono:");
+    String correo = JOptionPane.showInputDialog("Ingrese el correo electrónico:");
+    String pais = JOptionPane.showInputDialog("Ingrese el país de procedencia:");
 
-    public static void registrarNuevoCliente() {
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre completo:");
-        String documento = JOptionPane.showInputDialog("Ingrese el documento de identidad:");
-        String telefono = JOptionPane.showInputDialog("Ingrese el teléfono:");
-        String correo = JOptionPane.showInputDialog("Ingrese el correo electrónico:");
-        String pais = JOptionPane.showInputDialog("Ingrese el país de procedencia:");
+    Cliente nuevoCliente = new Cliente(nombre, documento, telefono, correo, pais);
+    Cliente[] lista = devPlus.getListaClientes();
+    boolean guardado = false;
 
-        Cliente nuevoCliente = new Cliente(nombre, documento, telefono, correo, pais);
-        
-        devPlus.agregarCliente(nuevoCliente);
-        
-        JOptionPane.showMessageDialog(null, "Cliente registrado con éxito");
+    for (int i = 0; i < lista.length; i++) {
+        if (lista[i] == null) {
+            lista[i] = nuevoCliente;
+            guardado = true;
+            JOptionPane.showMessageDialog(null, "Cliente guardado. Espacio ocupado: " + (i + 1) + "/100");
+            break;
+        }
     }
-    public static void registrarNuevoDesarrollador() {
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más clientes.");
+    }
+}
+
+public static void registrarNuevoDesarrollador() {
     String codigo = JOptionPane.showInputDialog("Ingrese el código del desarrollador:");
     String equipo = JOptionPane.showInputDialog("Ingrese el equipo de trabajo:");
     String nivel = JOptionPane.showInputDialog("Ingrese el nivel (Junior, Semisenior, Senior):");
@@ -75,34 +86,72 @@ public class Main {
     String estado = JOptionPane.showInputDialog("Ingrese el estado (Disponible, Asignado, Ocupado, En capacitación):");
 
     Desarrollador nuevoDesarrollador = new Desarrollador(codigo, equipo, nivel, maxProyectos, tarifa, estado);
-    devPlus.agregarDesarrollador(nuevoDesarrollador);
+    Desarrollador[] lista = devPlus.getListaDesarrolladores();
+    boolean guardado = false;
 
-    JOptionPane.showMessageDialog(null, "Desarrollador registrado con éxito");
+    for (int i = 0; i < lista.length; i++) {
+        if (lista[i] == null) {
+            lista[i] = nuevoDesarrollador;
+            guardado = true;
+            JOptionPane.showMessageDialog(null, "Desarrollador guardado. Espacio ocupado: " + (i + 1) + "/100");
+            break;
+        }
+    }
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más desarrolladores.");
+    }
 }
 
 public static void registrarServicioAdicional() {
     String codigo = JOptionPane.showInputDialog("Ingrese el código del servicio:");
     String nombre = JOptionPane.showInputDialog("Ingrese el nombre del servicio:");
     String descripcion = JOptionPane.showInputDialog("Ingrese la descripción:");
-    double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
     String disponibilidad = JOptionPane.showInputDialog("Ingrese la disponibilidad:");
+    double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
 
     ServicioAdicional nuevoServicio = new ServicioAdicional(codigo, nombre, descripcion, disponibilidad, precio);
-    devPlus.agregarServiciosAdicionales(nuevoServicio);
+    ServicioAdicional[] lista = devPlus. getListaServiciosAdicionales();
+    boolean guardado = false;
 
-    JOptionPane.showMessageDialog(null, "Servicio registrado con éxito");
+    for (int i = 0; i < lista.length; i++) {
+        if (lista[i] == null) {
+            lista[i] = nuevoServicio;
+            guardado = true;
+            JOptionPane.showMessageDialog(null, "Servicio guardado. Espacio ocupado: " + (i + 1) + "/100");
+            break;
+        }
+    }
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más servicios.");
+    }
 }
-   public static void registrarNuevoProyecto() {
+
+public static void registrarNuevoProyecto() {
     String codigo = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
     String fechaSolicitud = JOptionPane.showInputDialog("Ingrese la fecha de solicitud (DD/MM/AAAA):");
     String fechaInicio = JOptionPane.showInputDialog("Ingrese la fecha de inicio (DD/MM/AAAA):");
     String fechaEntrega = JOptionPane.showInputDialog("Ingrese la fecha de entrega (DD/MM/AAAA):");
-    String estado = JOptionPane.showInputDialog("Ingrese el estado (Pendiente, Confirmado, En curso, Finalizado, Cancelado):");
-    String metodoPago = JOptionPane.showInputDialog("Ingrese el método de pago (tarjeta, transferencia, efectivo):");
-    double valorTotal = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el valor total estimado:"));
+    String estado = JOptionPane.showInputDialog("Ingrese el estado del proyecto:");
+    String metodoPago = JOptionPane.showInputDialog("Ingrese el método de pago:");
+    double valorTotal = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el valor total:"));
 
     Proyecto nuevoProyecto = new Proyecto(codigo, fechaSolicitud, fechaInicio, fechaEntrega, estado, metodoPago, valorTotal);
+    Proyecto[] lista = devPlus.getListaProyectos();
+    boolean guardado = false;
 
-    JOptionPane.showMessageDialog(null, "Proyecto registrado con éxito");
+    for (int i = 0; i < lista.length; i++) {
+        if (lista[i] == null) {
+            lista[i] = nuevoProyecto;
+            guardado = true;
+            JOptionPane.showMessageDialog(null, "Proyecto guardado. Espacio ocupado: " + (i + 1) + "/100");
+            break;
+        }
+    }
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más proyectos.");
+    }
 }
 }
