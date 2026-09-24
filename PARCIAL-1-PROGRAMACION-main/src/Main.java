@@ -3,7 +3,7 @@ import javax.swing.JOptionPane;
 
 public class Main {
     
-    static ArrayList<Cliente> listaClientes = new ArrayList<>();
+    static Empresa devPlus = new Empresa("900123456", "DevPlus", "www.devplus.com", "Armenia", "3001234567");
 
     public static void main(String[] args) {
         
@@ -27,10 +27,14 @@ public class Main {
                     registrarNuevoCliente();
                     break;
                 case 2:
+                    registrarNuevoDesarrollador();
+                    
                     break;
                 case 3:
+                    registrarServicioAdicional();
                     break;
                 case 4:
+                    registrarNuevoProyecto();
                     break;
                 case 5:
                     break;
@@ -58,8 +62,47 @@ public class Main {
 
         Cliente nuevoCliente = new Cliente(nombre, documento, telefono, correo, pais);
         
-        listaClientes.add(nuevoCliente);
+        devPlus.agregarCliente(nuevoCliente);
         
         JOptionPane.showMessageDialog(null, "Cliente registrado con éxito");
     }
+    public static void registrarNuevoDesarrollador() {
+    String codigo = JOptionPane.showInputDialog("Ingrese el código del desarrollador:");
+    String equipo = JOptionPane.showInputDialog("Ingrese el equipo de trabajo:");
+    String nivel = JOptionPane.showInputDialog("Ingrese el nivel (Junior, Semisenior, Senior):");
+    int maxProyectos = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad máxima de proyectos simultáneos:"));
+    double tarifa = Double.parseDouble(JOptionPane.showInputDialog("Ingrese la tarifa por día:"));
+    String estado = JOptionPane.showInputDialog("Ingrese el estado (Disponible, Asignado, Ocupado, En capacitación):");
+
+    Desarrollador nuevoDesarrollador = new Desarrollador(codigo, equipo, nivel, maxProyectos, tarifa, estado);
+    devPlus.agregarDesarrollador(nuevoDesarrollador);
+
+    JOptionPane.showMessageDialog(null, "Desarrollador registrado con éxito");
+}
+
+public static void registrarServicioAdicional() {
+    String codigo = JOptionPane.showInputDialog("Ingrese el código del servicio:");
+    String nombre = JOptionPane.showInputDialog("Ingrese el nombre del servicio:");
+    String descripcion = JOptionPane.showInputDialog("Ingrese la descripción:");
+    double precio = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio:"));
+    String disponibilidad = JOptionPane.showInputDialog("Ingrese la disponibilidad:");
+
+    ServicioAdicional nuevoServicio = new ServicioAdicional(codigo, nombre, descripcion, disponibilidad, precio);
+    devPlus.agregarServiciosAdicionales(nuevoServicio);
+
+    JOptionPane.showMessageDialog(null, "Servicio registrado con éxito");
+}
+   public static void registrarNuevoProyecto() {
+    String codigo = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
+    String fechaSolicitud = JOptionPane.showInputDialog("Ingrese la fecha de solicitud (DD/MM/AAAA):");
+    String fechaInicio = JOptionPane.showInputDialog("Ingrese la fecha de inicio (DD/MM/AAAA):");
+    String fechaEntrega = JOptionPane.showInputDialog("Ingrese la fecha de entrega (DD/MM/AAAA):");
+    String estado = JOptionPane.showInputDialog("Ingrese el estado (Pendiente, Confirmado, En curso, Finalizado, Cancelado):");
+    String metodoPago = JOptionPane.showInputDialog("Ingrese el método de pago (tarjeta, transferencia, efectivo):");
+    double valorTotal = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el valor total estimado:"));
+
+    Proyecto nuevoProyecto = new Proyecto(codigo, fechaSolicitud, fechaInicio, fechaEntrega, estado, metodoPago, valorTotal);
+
+    JOptionPane.showMessageDialog(null, "Proyecto registrado con éxito");
+}
 }
