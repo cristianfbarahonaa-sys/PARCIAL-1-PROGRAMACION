@@ -40,6 +40,7 @@ public class Main {
                     asignarDesarrolladorAProyecto();
                     break;
                 case 6:
+                     agregarSrviciooAProyectos();
                     break;
                 case 7:
                     break;
@@ -209,7 +210,7 @@ public static void asignarDesarrolladorAProyecto() {
         JOptionPane.showMessageDialog(null, "No asignado. El estado del desarrollador es: " + desarrolladorEncontrado.getEstado());
     }
 }
-static void agregarServiciosAProyecto() {
+static void agregarSrviciooAProyectos() {
     String codigoProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
     Proyecto proyectoEncontrado = null;
     Proyecto[] proyectos = devPlus.getListaProyectos();
@@ -257,5 +258,49 @@ static void agregarServiciosAProyecto() {
     if (!guardado) {
         JOptionPane.showMessageDialog(null, "Error: Límite de servicios alcanzado para este proyecto.");
     }
+}
+static void consultarClientePorTelefono() {
+    String telefonoBuscado = JOptionPane.showInputDialog("Ingrese el número de teléfono a consultar:");
+    
+    Cliente[] clientes = devPlus.getListaClientes();
+    Cliente clienteEncontrado = null;
+
+    for (int i = 0; i < clientes.length; i++) {
+        if (clientes[i] != null && clientes[i].getTelefono().equals(telefonoBuscado)) {
+            clienteEncontrado = clientes[i];
+            break;
+        }
+    }
+
+    if (clienteEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "No se encontró ningún cliente registrado con ese número de teléfono.");
+        return; 
+    }
+
+    long numeroTelefono = Long.parseLong(clienteEncontrado.getTelefono());
+    long sumaDivisores = 0;
+
+    for (long i = 1; i <= numeroTelefono / 2; i++) {
+        if (numeroTelefono % i == 0) {
+            sumaDivisores += i;
+        }
+    }
+
+    String mensajePerfecto = "";
+    if (sumaDivisores == numeroTelefono && numeroTelefono > 0) {
+        mensajePerfecto = "¡El número de teléfono ES un número perfecto!";
+    } else {
+        mensajePerfecto = "El número de teléfono NO es un número perfecto.";
+    }
+
+    JOptionPane.showMessageDialog(null, 
+        "--- CLIENTE ENCONTRADO ---\n" +
+        "Nombre: " + clienteEncontrado.getNombre() + "\n" +
+        "Documento: " + clienteEncontrado.getDocumento() + "\n" + 
+        "Teléfono: " + clienteEncontrado.getNumTelefono() + "\n" +
+        "Correo: " + clienteEncontrado.getCorreo() + "\n\n" +      
+        "--- ANÁLISIS MATEMÁTICO ---\n" + 
+        mensajePerfecto
+    );
 }
 }
