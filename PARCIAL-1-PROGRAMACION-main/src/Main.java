@@ -154,4 +154,58 @@ public static void registrarNuevoProyecto() {
         JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más proyectos.");
     }
 }
+public static void asignarDesarrolladorAProyecto() {
+    String codProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
+    Proyecto proyectoEncontrado = null;
+    Proyecto[] proyectos = devPlus.getListaProyectos();
+
+    for (int i = 0; i < proyectos.length; i++) {
+        if (proyectos[i] != null && proyectos[i].getCodigo().equals(codProyecto)) {
+            proyectoEncontrado = proyectos[i];
+            break;
+        }
+    }
+
+    if (proyectoEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Proyecto no encontrado.");
+        return;
+    }
+
+    String codDesarrollador = JOptionPane.showInputDialog("Ingrese el código del desarrollador a asignar:");
+    Desarrollador desarrolladorEncontrado = null;
+    Desarrollador[] desarrolladores = devPlus.getListaDesarrolladores();
+
+    for (int i = 0; i < desarrolladores.length; i++) {
+        if (desarrolladores[i] != null && desarrolladores[i].getCodigo().equals(codDesarrollador)) {
+            desarrolladorEncontrado = desarrolladores[i];
+            break;
+        }
+    }
+
+    if (desarrolladorEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Desarrollador no encontrado.");
+        return;
+    }
+
+    if (desarrolladorEncontrado.getEstado().equalsIgnoreCase("Disponible")) {
+        Desarrollador[] listaProyDesarrolladores = proyectoEncontrado.getListaDesarrolladores();
+        boolean guardado = false;
+
+        for (int i = 0; i < listaProyDesarrolladores.length; i++) {
+            if (listaProyDesarrolladores[i] == null) {
+                listaProyDesarrolladores[i] = desarrolladorEncontrado;
+                desarrolladorEncontrado.setEstado("Asignado");
+                guardado = true;
+                JOptionPane.showMessageDialog(null, "Desarrollador asignado con éxito. Espacio en proyecto: " + (i + 1) + "/100");
+                break;
+            }
+        }
+
+        if (!guardado) {
+            JOptionPane.showMessageDialog(null, "Error: Límite de desarrolladores alcanzado para este proyecto.");
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "No asignado. El estado del desarrollador es: " + desarrolladorEncontrado.getEstado());
+    }
+}
 }

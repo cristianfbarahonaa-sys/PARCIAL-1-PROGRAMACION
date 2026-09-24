@@ -10,9 +10,7 @@ public class Proyecto {
     private Desarrollador[] listaDesarrolladores;
     private ServicioAdicional[] serviciosAdicionales;
 
-    private int contadorDesarrolladores;
-    private int contadorServicios;
-
+    
     public Proyecto(String codigo, String fechaSolicitud, String fechaInicio, String fechaEntrega, String estado, String metodoPago, double valorTotal) {
         this.codigo = codigo;
         this.fechaSolicitud = fechaSolicitud;
@@ -25,8 +23,7 @@ public class Proyecto {
         this.listaDesarrolladores = new Desarrollador[100];
         this.serviciosAdicionales = new ServicioAdicional[100];
         
-        this.contadorDesarrolladores = 0;
-        this.contadorServicios = 0;
+        
     }
 
     public String getCodigo() { return codigo; }
@@ -56,9 +53,5 @@ public class Proyecto {
     public ServicioAdicional[] getServiciosAdicionales() { return serviciosAdicionales; }
     public void setServiciosAdicionales(ServicioAdicional[] serviciosAdicionales) { this.serviciosAdicionales = serviciosAdicionales; }
 
-    public int getContadorDesarrolladores() { return contadorDesarrolladores; }
-    public void setContadorDesarrolladores(int contadorDesarrolladores) { this.contadorDesarrolladores = contadorDesarrolladores; }
-
-    public int getContadorServicios() { return contadorServicios; }
-    public void setContadorServicios(int contadorServicios) { this.contadorServicios = contadorServicios; }
+    
 }
