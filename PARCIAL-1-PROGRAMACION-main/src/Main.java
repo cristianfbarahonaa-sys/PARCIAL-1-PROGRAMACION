@@ -48,6 +48,16 @@ public class Main {
                 case 8:
                     consultarIngresosPorFecha();
                     break;
+                case 9:
+    
+                 break;
+                 case 12:
+                    actualizarEstadoProyecto();
+                    break;
+
+
+
+
                 case 0:
                     JOptionPane.showMessageDialog(null, "Saliendo...");
                     break;
@@ -381,40 +391,39 @@ static void consultarIngresosPorFecha() {
         JOptionPane.showMessageDialog(null, "No se encontraron proyectos registrados con la fecha de solicitud: " + fechaBuscada);
     }
 }
-public static void mostrarDatosDesarrollador(Desarrollador dev) {
-    String mensaje = "--- DATOS DEL DESARROLLADOR ---\n" +
-                     "Código: " + dev.getCodigo() + "\n" +
-                     "Equipo de Trabajo: " + dev.getEquipoTrabajo() + "\n" +
-                     "Nivel: " + dev.getNivel() + "\n" +
-                     "Tarifa por Día: $" + dev.getTarifaPorDia() + "\n" +
-                     "Límite de Proyectos Simultáneos: " + dev.getCantidadProyectosSimultaneos() + "\n" +
-                     "Proyectos Actuales Asignados: " + dev.getProyectosActuales() + "\n" +
-                     "Estado Actual: " + dev.getEstado();
-    
-    JOptionPane.showMessageDialog(null, mensaje);
 
-}
-public static void mostrarDatosServicio(ServicioAdicional servicio) {
-    String mensaje = "--- DATOS DEL SERVICIO ADICIONAL ---\n" +
-                     "Código: " + servicio.getCodigo() + "\n" +
-                     "Nombre del Servicio: " + servicio.getNombre() + "\n" +
-                     "Descripción: " + servicio.getDescripcion() + "\n" +
-                     "Precio: $" + servicio.getPrecio() + "\n" +
-                     "Disponibilidad: " + servicio.getDisponibilidad();
-    
-    JOptionPane.showMessageDialog(null, mensaje);
-}
-public static void mostrarDatosProyecto(Proyecto proyecto) {
-    String mensaje = "--- DATOS DEL PROYECTO ---\n" +
-                     "Código del Proyecto: " + proyecto.getCodigo() + "\n" +
-                     "Fecha de Solicitud: " + proyecto.getFechaSolicitud() + "\n" +
-                     "Fecha de Inicio: " + proyecto.getFechaInicio() + "\n" +
-                     "Fecha de Entrega: " + proyecto.getFechaEntrega() + "\n" +
-                     "Estado: " + proyecto.getEstado() + "\n" +
-                     "Método de Pago: " + proyecto.getMetodoPago() + "\n" +
-                     "Valor Total Acumulado: $" + proyecto.getValorTotal();
-    
-    JOptionPane.showMessageDialog(null, mensaje);
-}
-}
+ public static void actualizarEstadoProyecto() {
+    String codProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto a actualizar:");
+    Proyecto[] proyectos = devPlus.getListaProyectos();
+    Proyecto proyectoEncontrado = null;
 
+    for (int i = 0; i < proyectos.length; i++) {
+        if (proyectos[i] != null && proyectos[i].getCodigo().equals(codProyecto)) {
+            proyectoEncontrado = proyectos[i];
+            break;
+        }
+    }
+
+    if (proyectoEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Error: Proyecto no encontrado.");
+        return;
+    }
+
+    String[] estadosPermitidos = {"Pendiente", "Confirmado", "En curso", "Finalizado", "Cancelado"};
+    
+    String nuevoEstado = (String) JOptionPane.showInputDialog(
+            null,
+            "Seleccione el nuevo estado del proyecto:\nEstado actual: " + proyectoEncontrado.getEstado(),
+            "Actualizar Estado",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            estadosPermitidos,
+            estadosPermitidos[0]
+    );
+
+    if (nuevoEstado != null) {
+        proyectoEncontrado.setEstado(nuevoEstado);
+        JOptionPane.showMessageDialog(null, "El estado del proyecto ha sido actualizado con éxito a: " + nuevoEstado);
+    }
+}
+}
