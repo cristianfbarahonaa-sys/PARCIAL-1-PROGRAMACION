@@ -19,7 +19,8 @@ public class Main {
                     "\n 5. Asignar Desarrolladores a Proyecto" +
                     "\n 6. Agregar Servicios a Proyecto" +
                     "\n 7. Consultar Cliente por Teléfono" +
-                    "\n 8. Consultar Ingresos Totales por Fecha" +
+                    "\n 8. Consultar Ingresos Totales por Fecha"+
+                    "\n 9. actualizar proyecto" +
                     "\n 0. Salir del sistema"));
 
             switch (opcion) {
@@ -48,14 +49,10 @@ public class Main {
                 case 8:
                     consultarIngresosPorFecha();
                     break;
-                case 9:
-    
-                 break;
-                 case 12:
+                
+                 case 9:
                     actualizarEstadoProyecto();
                     break;
-
-
 
 
                 case 0:
