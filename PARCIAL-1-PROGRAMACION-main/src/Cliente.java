@@ -4,6 +4,7 @@ public class Cliente {
     private String numTelefono;
     private String correoElectronico;
     private String paisOrigen;
+    private int cantidadProyectos = 0;
 public Cliente (String nombre, String documento, String numTelefono, String correoElectronico, String paisOrigen){
 
     this.nombre = nombre;
@@ -52,4 +53,10 @@ public Cliente (String nombre, String documento, String numTelefono, String corr
     public void setPaisOrigen(String paisOrigen) {
         this.paisOrigen = paisOrigen;
     }
+    public int getCantidadProyectos() {
+    return cantidadProyectos;
+}
+public void setCantidadProyectos(int cantidadProyectos) {
+    this.cantidadProyectos = cantidadProyectos;
+}
 }

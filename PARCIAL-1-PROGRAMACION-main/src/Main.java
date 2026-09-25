@@ -43,8 +43,10 @@ public class Main {
                      agregarSrviciooAProyectos();
                     break;
                 case 7:
+                     consultarClientePorTelefono();
                     break;
                 case 8:
+                    consultarIngresosPorFecha();
                     break;
                 case 0:
                     JOptionPane.showMessageDialog(null, "Saliendo...");
@@ -131,15 +133,34 @@ public static void registrarServicioAdicional() {
 }
 
 public static void registrarNuevoProyecto() {
+    
+    String documentoBuscado = JOptionPane.showInputDialog("Ingrese el documento del cliente que va a contratar el proyecto:");
+    Cliente[] clientes = devPlus.getListaClientes();
+    Cliente clienteEncontrado = null;
+
+    for (int i = 0; i < clientes.length; i++) {
+        if (clientes[i] != null && clientes[i].getDocumento().equals(documentoBuscado)) {
+            clienteEncontrado = clientes[i];
+            break;
+        }
+    }
+
+    if (clienteEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Error: El cliente no existe. Debe registrarlo primero en la Opción 1.");
+        return; 
+    }
+
     String codigo = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
     String fechaSolicitud = JOptionPane.showInputDialog("Ingrese la fecha de solicitud (DD/MM/AAAA):");
     String fechaInicio = JOptionPane.showInputDialog("Ingrese la fecha de inicio (DD/MM/AAAA):");
     String fechaEntrega = JOptionPane.showInputDialog("Ingrese la fecha de entrega (DD/MM/AAAA):");
     String estado = JOptionPane.showInputDialog("Ingrese el estado del proyecto:");
     String metodoPago = JOptionPane.showInputDialog("Ingrese el método de pago:");
-    double valorTotal = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el valor total:"));
+    
+    double valorTotal = 0.0;
 
     Proyecto nuevoProyecto = new Proyecto(codigo, fechaSolicitud, fechaInicio, fechaEntrega, estado, metodoPago, valorTotal);
+    
     Proyecto[] lista = devPlus.getListaProyectos();
     boolean guardado = false;
 
@@ -147,7 +168,11 @@ public static void registrarNuevoProyecto() {
         if (lista[i] == null) {
             lista[i] = nuevoProyecto;
             guardado = true;
-            JOptionPane.showMessageDialog(null, "Proyecto guardado. Espacio ocupado: " + (i + 1) + "/100");
+            
+            int historialActual = clienteEncontrado.getCantidadProyectos();
+            clienteEncontrado.setCantidadProyectos(historialActual + 1);
+            
+            JOptionPane.showMessageDialog(null, "Proyecto creado. Historial del cliente: " + (historialActual + 1) + " proyectos.");
             break;
         }
     }
@@ -156,10 +181,11 @@ public static void registrarNuevoProyecto() {
         JOptionPane.showMessageDialog(null, "Error: Memoria llena. No se pueden registrar más proyectos.");
     }
 }
+
 public static void asignarDesarrolladorAProyecto() {
     String codProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
-    Proyecto proyectoEncontrado = null;
     Proyecto[] proyectos = devPlus.getListaProyectos();
+    Proyecto proyectoEncontrado = null;
 
     for (int i = 0; i < proyectos.length; i++) {
         if (proyectos[i] != null && proyectos[i].getCodigo().equals(codProyecto)) {
@@ -169,47 +195,71 @@ public static void asignarDesarrolladorAProyecto() {
     }
 
     if (proyectoEncontrado == null) {
-        JOptionPane.showMessageDialog(null, "Proyecto no encontrado.");
+        JOptionPane.showMessageDialog(null, "Error: Proyecto no encontrado.");
         return;
     }
 
-    String codDesarrollador = JOptionPane.showInputDialog("Ingrese el código del desarrollador a asignar:");
-    Desarrollador desarrolladorEncontrado = null;
+    String codDesarrollador = JOptionPane.showInputDialog("Ingrese el código del desarrollador:");
     Desarrollador[] desarrolladores = devPlus.getListaDesarrolladores();
+    Desarrollador devEncontrado = null;
 
     for (int i = 0; i < desarrolladores.length; i++) {
         if (desarrolladores[i] != null && desarrolladores[i].getCodigo().equals(codDesarrollador)) {
-            desarrolladorEncontrado = desarrolladores[i];
+            devEncontrado = desarrolladores[i];
             break;
         }
     }
 
-    if (desarrolladorEncontrado == null) {
-        JOptionPane.showMessageDialog(null, "Desarrollador no encontrado.");
+    if (devEncontrado == null) {
+        JOptionPane.showMessageDialog(null, "Error: Desarrollador no encontrado.");
         return;
     }
 
-    if (desarrolladorEncontrado.getEstado().equalsIgnoreCase("Disponible")) {
-        Desarrollador[] listaProyDesarrolladores = proyectoEncontrado.getListaDesarrolladores();
-        boolean guardado = false;
+    int limite = devEncontrado.getCantidadProyectosSimultaneos();
+    int ocupacionActual = devEncontrado.getProyectosActuales();
 
-        for (int i = 0; i < listaProyDesarrolladores.length; i++) {
-            if (listaProyDesarrolladores[i] == null) {
-                listaProyDesarrolladores[i] = desarrolladorEncontrado;
-                desarrolladorEncontrado.setEstado("Asignado");
-                guardado = true;
-                JOptionPane.showMessageDialog(null, "Desarrollador asignado con éxito. Espacio en proyecto: " + (i + 1) + "/100");
-                break;
+    if (ocupacionActual >= limite) {
+        JOptionPane.showMessageDialog(null, "Error: El desarrollador ya alcanzó su límite de " + limite + " proyectos simultáneos.");
+        return;
+    }
+
+    if (devEncontrado.getEstado().equalsIgnoreCase("En capacitación")) {
+        JOptionPane.showMessageDialog(null, "Error: El desarrollador se encuentra en capacitación y no está disponible.");
+        return;
+    }
+
+    int diasTrabajo = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de días que trabajará en el proyecto:"));
+
+    Desarrollador[] devsProyecto = proyectoEncontrado.getListaDesarrolladores();
+    boolean guardado = false;
+
+    for (int i = 0; i < devsProyecto.length; i++) {
+        if (devsProyecto[i] == null) {
+            devsProyecto[i] = devEncontrado;
+            guardado = true;
+            
+            devEncontrado.setProyectosActuales(ocupacionActual + 1);
+            
+            if (devEncontrado.getProyectosActuales() == limite) {
+                devEncontrado.setEstado("Ocupado"); 
+            } else {
+                devEncontrado.setEstado("Asignado");
             }
-        }
 
-        if (!guardado) {
-            JOptionPane.showMessageDialog(null, "Error: Límite de desarrolladores alcanzado para este proyecto.");
+            double costoManoDeObra = devEncontrado.getTarifaPorDia()* diasTrabajo;
+            double totalAcumulado = proyectoEncontrado.getValorTotal() + costoManoDeObra;
+            proyectoEncontrado.setValorTotal(totalAcumulado);
+
+            JOptionPane.showMessageDialog(null, "Desarrollador asignado con éxito. Costo sumado a la factura del proyecto: $" + costoManoDeObra);
+            break;
         }
-    } else {
-        JOptionPane.showMessageDialog(null, "No asignado. El estado del desarrollador es: " + desarrolladorEncontrado.getEstado());
+    }
+
+    if (!guardado) {
+        JOptionPane.showMessageDialog(null, "Error: El proyecto ya no tiene cupo para más desarrolladores.");
     }
 }
+
 static void agregarSrviciooAProyectos() {
     String codigoProyecto = JOptionPane.showInputDialog("Ingrese el código del proyecto:");
     Proyecto proyectoEncontrado = null;
@@ -257,6 +307,10 @@ static void agregarSrviciooAProyectos() {
 
     if (!guardado) {
         JOptionPane.showMessageDialog(null, "Error: Límite de servicios alcanzado para este proyecto.");
+
+        double costoServicio = servicioEncontrado.getPrecio(); 
+        double totalAcumulado = proyectoEncontrado.getValorTotal() + costoServicio; 
+        proyectoEncontrado.setValorTotal(totalAcumulado); 
     }
 }
 static void consultarClientePorTelefono() {
@@ -266,7 +320,7 @@ static void consultarClientePorTelefono() {
     Cliente clienteEncontrado = null;
 
     for (int i = 0; i < clientes.length; i++) {
-        if (clientes[i] != null && clientes[i].getTelefono().equals(telefonoBuscado)) {
+        if (clientes[i] != null && clientes[i].getNumTelefono().equals(telefonoBuscado)) {
             clienteEncontrado = clientes[i];
             break;
         }
@@ -277,7 +331,7 @@ static void consultarClientePorTelefono() {
         return; 
     }
 
-    long numeroTelefono = Long.parseLong(clienteEncontrado.getTelefono());
+    long numeroTelefono = Long.parseLong(clienteEncontrado.getNumTelefono());
     long sumaDivisores = 0;
 
     for (long i = 1; i <= numeroTelefono / 2; i++) {
@@ -298,9 +352,69 @@ static void consultarClientePorTelefono() {
         "Nombre: " + clienteEncontrado.getNombre() + "\n" +
         "Documento: " + clienteEncontrado.getDocumento() + "\n" + 
         "Teléfono: " + clienteEncontrado.getNumTelefono() + "\n" +
-        "Correo: " + clienteEncontrado.getCorreo() + "\n\n" +      
+        "Correo: " + clienteEncontrado.getCorreoElectronico() + "\n\n" +      
         "--- ANÁLISIS MATEMÁTICO ---\n" + 
         mensajePerfecto
     );
 }
+static void consultarIngresosPorFecha() {
+    String fechaBuscada = JOptionPane.showInputDialog("Ingrese la fecha de solicitud a consultar (Ejemplo: DD/MM/AAAA):");
+    
+    Proyecto[] proyectos = devPlus.getListaProyectos(); 
+    double ingresosTotales = 0.0;
+    boolean seEncontraronProyectos = false;
+
+    for (int i = 0; i < proyectos.length; i++) {
+        if (proyectos[i] != null && proyectos[i].getFechaSolicitud().equals(fechaBuscada)) {
+            ingresosTotales += proyectos[i].getValorTotal(); 
+            seEncontraronProyectos = true; 
+        }
+    }
+
+    if (seEncontraronProyectos) {
+        JOptionPane.showMessageDialog(null, 
+            "--- REPORTE DE INGRESOS ---\n" +
+            "Fecha consultada: " + fechaBuscada + "\n" +
+            "Total de ingresos acumulados: $" + ingresosTotales
+        );
+    } else {
+        JOptionPane.showMessageDialog(null, "No se encontraron proyectos registrados con la fecha de solicitud: " + fechaBuscada);
+    }
 }
+public static void mostrarDatosDesarrollador(Desarrollador dev) {
+    String mensaje = "--- DATOS DEL DESARROLLADOR ---\n" +
+                     "Código: " + dev.getCodigo() + "\n" +
+                     "Equipo de Trabajo: " + dev.getEquipoTrabajo() + "\n" +
+                     "Nivel: " + dev.getNivel() + "\n" +
+                     "Tarifa por Día: $" + dev.getTarifaPorDia() + "\n" +
+                     "Límite de Proyectos Simultáneos: " + dev.getCantidadProyectosSimultaneos() + "\n" +
+                     "Proyectos Actuales Asignados: " + dev.getProyectosActuales() + "\n" +
+                     "Estado Actual: " + dev.getEstado();
+    
+    JOptionPane.showMessageDialog(null, mensaje);
+
+}
+public static void mostrarDatosServicio(ServicioAdicional servicio) {
+    String mensaje = "--- DATOS DEL SERVICIO ADICIONAL ---\n" +
+                     "Código: " + servicio.getCodigo() + "\n" +
+                     "Nombre del Servicio: " + servicio.getNombre() + "\n" +
+                     "Descripción: " + servicio.getDescripcion() + "\n" +
+                     "Precio: $" + servicio.getPrecio() + "\n" +
+                     "Disponibilidad: " + servicio.getDisponibilidad();
+    
+    JOptionPane.showMessageDialog(null, mensaje);
+}
+public static void mostrarDatosProyecto(Proyecto proyecto) {
+    String mensaje = "--- DATOS DEL PROYECTO ---\n" +
+                     "Código del Proyecto: " + proyecto.getCodigo() + "\n" +
+                     "Fecha de Solicitud: " + proyecto.getFechaSolicitud() + "\n" +
+                     "Fecha de Inicio: " + proyecto.getFechaInicio() + "\n" +
+                     "Fecha de Entrega: " + proyecto.getFechaEntrega() + "\n" +
+                     "Estado: " + proyecto.getEstado() + "\n" +
+                     "Método de Pago: " + proyecto.getMetodoPago() + "\n" +
+                     "Valor Total Acumulado: $" + proyecto.getValorTotal();
+    
+    JOptionPane.showMessageDialog(null, mensaje);
+}
+}
+

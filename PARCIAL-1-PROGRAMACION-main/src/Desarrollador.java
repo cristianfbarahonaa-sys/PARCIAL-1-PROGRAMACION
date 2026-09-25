@@ -5,6 +5,7 @@ public class Desarrollador {
     private int cantidadProyectosSimultaneos;
     private double tarifaPorDia;
     private String estado;
+    private int proyectosActuales = 0; 
 
 public Desarrollador (String codigo, String equipoTrabajo, String nivel, int candidadProyectosSimultaneos, double tarifaPorDia, String estado){
     this.codigo = codigo;
@@ -13,7 +14,7 @@ public Desarrollador (String codigo, String equipoTrabajo, String nivel, int can
     this.cantidadProyectosSimultaneos = candidadProyectosSimultaneos;
     this.tarifaPorDia = tarifaPorDia;
     this.estado = estado;
-
+    this.proyectosActuales = proyectosActuales;
     }
 
     public String getCodigo() {
@@ -63,4 +64,10 @@ public Desarrollador (String codigo, String equipoTrabajo, String nivel, int can
     public void setEstado(String estado) {
         this.estado = estado;
     }
+    public int getProyectosActuales() {
+    return proyectosActuales;
+    }
+   public void setProyectosActuales(int proyectosActuales) {
+    this.proyectosActuales = proyectosActuales;
+}
 }

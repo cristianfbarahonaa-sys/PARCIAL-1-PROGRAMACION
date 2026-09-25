@@ -40,7 +40,7 @@ public ServicioAdicional (String codigo, String nombre, String descripcion, Stri
         this.descripcion = descripcion;
     }
 
-    public String isDisponibilidad() {
+    public String getDisponibilidad() {
         return disponibilidad;
     }
 
@@ -51,6 +51,7 @@ public ServicioAdicional (String codigo, String nombre, String descripcion, Stri
     public double getPrecio() {
         return precio;
     }
+   
 
     
 }
